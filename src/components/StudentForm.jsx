@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const StudentForm = ({ show, handleClose, handleSubmit, initialData }) => {
-  const [student, setStudent] = useState(initialData);
-  const [errors, setErrors] = useState({});
+const StudentForm = ({ show, handleClose, handleSubmit, initialData, errors, setErrors }) => {
+  const [student, setStudent] = useState({ ...initialData });
 
   useEffect(() => {
-    setStudent(initialData);
-    setErrors({});
+    // Update local state only if initialData changes
+    setStudent({ ...initialData });
   }, [initialData]);
 
   const handleChange = (e) => {
@@ -16,22 +15,22 @@ const StudentForm = ({ show, handleClose, handleSubmit, initialData }) => {
   };
 
   const validateForm = () => {
-    let errors = {};
+    let newErrors = {};
     let isValid = true;
 
     // Validate phone number (10 digits)
     if (!/^\d{10}$/.test(student.phone)) {
-      errors.phone = 'Phone number must be 10 digits';
+      newErrors.phone = 'Phone number must be 10 digits';
       isValid = false;
     }
 
     // Validate email format
     if (!/\S+@\S+\.\S+/.test(student.email)) {
-      errors.email = 'Email address is invalid';
+      newErrors.email = 'Email address is invalid';
       isValid = false;
     }
 
-    setErrors(errors);
+    setErrors(newErrors);
     return isValid;
   };
 
@@ -45,7 +44,7 @@ const StudentForm = ({ show, handleClose, handleSubmit, initialData }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>{student.id ? 'Edit Student' : 'Add Student'}</Modal.Title>
+        <Modal.Title>{student.id ? 'Edit Student' : 'save'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleFormSubmit}>
@@ -100,7 +99,7 @@ const StudentForm = ({ show, handleClose, handleSubmit, initialData }) => {
               Cancel
             </Button>
             <Button variant="primary" type="submit">
-              {student.id ? 'Update Student' : 'Add Student'}
+              {student.id ? 'Update Student' : 'save'}
             </Button>
           </Modal.Footer>
         </Form>
